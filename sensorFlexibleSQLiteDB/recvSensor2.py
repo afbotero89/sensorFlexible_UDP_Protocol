@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
         #self.sc, self.addr = self.s.accept()
         
         for i in range(3):            
-            time.sleep(0.5)
+            time.sleep(1)
             #self.sc.send(('*').encode())
             self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
             print("conecto")
@@ -205,7 +205,7 @@ class Ui_MainWindow(object):
       
  #     data = scipy.ndimage.zoom(matrizDistribucion, 1)
       self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
-      if self.contadorCalculaTiemposExposicion == 30:
+      if self.contadorCalculaTiemposExposicion == 10:
         self.contadorCalculaTiemposExposicion = 0
         self.interfazTiempos.evento(self.vectorDesencriptado)
 
