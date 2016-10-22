@@ -21,7 +21,7 @@ import threading
 import scipy.ndimage
 import sys, struct
 import tiemposDeExposicion
-import interfazTiemposExposicionSensor1
+#import interfazTiemposExposicionSensor1
 from pylab import *
 #import pusher
 import time
@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
         self.vectorDesencriptado = []
         #self.vectorImagen = [255,0,45,2,0,184,3,0,107,3,0,117,2,0,112,5,0,18,7,0,7,6,0,1,12,14,2,0,3,4,0,1,2,0,9,2,0,7,9,9,47,45,26,7,0,24,10,11,15,3,0,25,7,7,14,0,62,14,0,19,3,7,6,0,7,5,0,17,10,47,54,32,0,24,5,11,49,51,0,26,5,2,0,40,255]
         self.cronometro = tiemposDeExposicion.Cronometro()
-        self.interfazTiempos = interfazTiemposExposicionSensor1.interfazTiemposExposicion()
+        #self.interfazTiempos = interfazTiemposExposicionSensor1.interfazTiemposExposicion()
         self.iniciaTramaDeDatos = False
 
         plt.set_cmap('jet')
@@ -95,7 +95,6 @@ class Ui_MainWindow(object):
         global vectorImagen, iniciaTramaDeDatos, vectorDatosDistribucionPresion, s
         while True:
           self.dibujarDistribucionPresionSensor1()
-          time.sleep(0.05)
 
         
     def dibujarDistribucionPresionSensor1(self):

@@ -8,6 +8,8 @@ import tiemposDeExposicion
 from pylab import *
 import sys, struct
 import sqlite3
+import ast
+import scipy.ndimage
 ion()
 
 
@@ -21,7 +23,7 @@ class interfazTiemposExposicion:
 
     def __init__(self):
         self.tiempo = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
-        
+        self.zona = 0
         #plt1.gca().invert_yaxis()
         axis = plt.gca()
         axis.get_xaxis().set_visible(False)
@@ -57,22 +59,38 @@ class interfazTiemposExposicion:
         self.pressureRegionSensor2 = False
         
         #plt1.show(block=False)
+        print('inicia tiempos')
+        self.sqlDataBase()
+        self.evento()
 
-    def evento(self, matrizDistribucionPresion):
+    def sqlDataBase(self):
+        self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
+        self.c = self.conn.cursor()
 
-        self.tiempo = self.cronometro.calculaTiempo()
-        for i in range(3):
-            for j in range(3):
-                if self.zonasActivas[i][j] == True and self.zonaActivada[i][j] == False:
-                    self.zonaActivada[i][j] = True
-                    self.cronometro.activaZonaDePresion(i,j)
-                if self.zonasActivas[i][j] == False and self.zonaActivada[i][j] == True:
-                    self.zonaActivada[i][j] = False
-                    self.cronometro.desactivaZonaDePresion(i,j)
-                    
-        #self.zonasActivas = zonasActivas
-        self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
-        self.dibujaMatriz()
+    def evento(self):
+        while True:
+            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='1'"):
+                dataSensor1 = row[1]
+
+
+            #Sensor 1
+            matrizSensor1 = ast.literal_eval(str(dataSensor1))
+
+            matrizDistribucionPresion = matrizSensor1
+
+            self.tiempo = self.cronometro.calculaTiempo()
+            for i in range(3):
+                for j in range(3):
+                    if self.zonasActivas[i][j] == True and self.zonaActivada[i][j] == False:
+                        self.zonaActivada[i][j] = True
+                        self.cronometro.activaZonaDePresion(i,j)
+                    if self.zonasActivas[i][j] == False and self.zonaActivada[i][j] == True:
+                        self.zonaActivada[i][j] = False
+                        self.cronometro.desactivaZonaDePresion(i,j)
+                        
+            #self.zonasActivas = zonasActivas
+            self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
+            self.dibujaMatriz()
         #print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2])
 
     def dibujaMatriz(self):
@@ -110,8 +128,9 @@ class interfazTiemposExposicion:
                     if int(tiempo.total_seconds()) > 100:
                         
                         if self.zonasActivas[i][j] == True:
-                            cell.set_color('r')
-                            cell._text.set_color('white')
+                            #cell.set_color('r')
+                            pass
+                            #cell._text.set_color('white')
                             #if self.pressureRegion == False:
                              #   cell.set_color('r')
                             #else:
@@ -152,118 +171,128 @@ class interfazTiemposExposicion:
         
 
     def determineAreasOfGreaterPressure(self, matrizDistribucion):
-
+        self.zona = self.zona + 1
         porcentajeSuperadoAlarma = 5
         maximaSumatoria = 43*43*75
         
         ######## Zone 1 ##############
-        pressureSumatoriaZone1 = 0
-        for i in range(14):
-            for j in range(14):
-                pressureSumatoriaZone1 = pressureSumatoriaZone1 +  matrizDistribucion[i][j]
-        percentagePressureZone1 = (pressureSumatoriaZone1*1000)/maximaSumatoria
-        
-        if percentagePressureZone1 > porcentajeSuperadoAlarma:
-
-            self.zonasActivas[0][0] = True
+        if self.zona == 1:
+            pressureSumatoriaZone1 = 0
+            for i in range(14):
+                for j in range(14):
+                    pressureSumatoriaZone1 = pressureSumatoriaZone1 +  matrizDistribucion[i][j]
+            percentagePressureZone1 = (pressureSumatoriaZone1*1000)/maximaSumatoria
             
-        else:
-            self.zonasActivas[0][0] = False
+            if percentagePressureZone1 > porcentajeSuperadoAlarma:
+
+                self.zonasActivas[0][0] = True
+                
+            else:
+                self.zonasActivas[0][0] = False
 
         ############# Zone 2 ##############
-        pressureSumatoriaZone2 = 0
-        
-        for i in range(14,28):
-            for j in range(14):
-                pressureSumatoriaZone2 = pressureSumatoriaZone2 +  matrizDistribucion[i][j]
-        percentagePressureZone2 = (pressureSumatoriaZone2*1000)/maximaSumatoria
-        if percentagePressureZone2 > porcentajeSuperadoAlarma:
-            self.zonasActivas[0][1] = True
+        elif self.zona == 2:
+            pressureSumatoriaZone2 = 0
+            
+            for i in range(14,28):
+                for j in range(14):
+                    pressureSumatoriaZone2 = pressureSumatoriaZone2 +  matrizDistribucion[i][j]
+            percentagePressureZone2 = (pressureSumatoriaZone2*1000)/maximaSumatoria
+            if percentagePressureZone2 > porcentajeSuperadoAlarma:
+                self.zonasActivas[0][1] = True
 
-        else:
-            self.zonasActivas[0][1] = False
+            else:
+                self.zonasActivas[0][1] = False
 
         
         #########  Zone 3 ###############
-        pressureSumatoriaZone3 = 0
-        for i in range(28,43):
-            for j in range(14):
-                pressureSumatoriaZone3 = pressureSumatoriaZone3 +  matrizDistribucion[i][j]
-        percentagePressureZone3 = (pressureSumatoriaZone3*1000)/maximaSumatoria
-        if percentagePressureZone3 > porcentajeSuperadoAlarma:
-            self.zonasActivas[0][2] = True
-        else:
-            self.zonasActivas[0][2] = False
+        elif self.zona == 3:
+            pressureSumatoriaZone3 = 0
+            for i in range(28,43):
+                for j in range(14):
+                    pressureSumatoriaZone3 = pressureSumatoriaZone3 +  matrizDistribucion[i][j]
+            percentagePressureZone3 = (pressureSumatoriaZone3*1000)/maximaSumatoria
+            if percentagePressureZone3 > porcentajeSuperadoAlarma:
+                self.zonasActivas[0][2] = True
+            else:
+                self.zonasActivas[0][2] = False
                        
         #########  Zone 4 ##############
-        pressureSumatoriaZone4 = 0
-        for i in range(14):
-            for j in range(14,28):
-                pressureSumatoriaZone4 = pressureSumatoriaZone4 +  matrizDistribucion[i][j]
-        percentagePressureZone4 = (pressureSumatoriaZone4*1000)/maximaSumatoria
-        if percentagePressureZone4 > porcentajeSuperadoAlarma:
-            self.zonasActivas[1][0] = True
-        else:
-            self.zonasActivas[1][0] = False
+        elif self.zona == 4:
+            pressureSumatoriaZone4 = 0
+            for i in range(14):
+                for j in range(14,28):
+                    pressureSumatoriaZone4 = pressureSumatoriaZone4 +  matrizDistribucion[i][j]
+            percentagePressureZone4 = (pressureSumatoriaZone4*1000)/maximaSumatoria
+            if percentagePressureZone4 > porcentajeSuperadoAlarma:
+                self.zonasActivas[1][0] = True
+            else:
+                self.zonasActivas[1][0] = False
               
         ######### Zone 5 #############
-        pressureSumatoriaZone5 = 0
-        for i in range(14,28):
-            for j in range(14,28):
-                pressureSumatoriaZone5 = pressureSumatoriaZone5 +  matrizDistribucion[i][j]
-        percentagePressureZone5 = (pressureSumatoriaZone5*1000)/maximaSumatoria
-        
-        if percentagePressureZone5 > porcentajeSuperadoAlarma:
-            self.zonasActivas[1][1] = True
-        else:
-            self.zonasActivas[1][1] = False
+        elif self.zona == 5:
+            pressureSumatoriaZone5 = 0
+            for i in range(14,28):
+                for j in range(14,28):
+                    pressureSumatoriaZone5 = pressureSumatoriaZone5 +  matrizDistribucion[i][j]
+            percentagePressureZone5 = (pressureSumatoriaZone5*1000)/maximaSumatoria
+            
+            if percentagePressureZone5 > porcentajeSuperadoAlarma:
+                self.zonasActivas[1][1] = True
+            else:
+                self.zonasActivas[1][1] = False
                    
         ######### Zone 6 #############
-        pressureSumatoriaZone6 = 0
-        for i in range(28,43):
-            for j in range(14,28):
-                pressureSumatoriaZone6 = pressureSumatoriaZone6 +  matrizDistribucion[i][j]
-        percentagePressureZone6 = (pressureSumatoriaZone6*1000)/maximaSumatoria
-        if percentagePressureZone6 > porcentajeSuperadoAlarma:
-            self.zonasActivas[1][2] = True
-            
-        else:
-            self.zonasActivas[1][2] = False
+        elif self.zona == 6:
+            pressureSumatoriaZone6 = 0
+            for i in range(28,43):
+                for j in range(14,28):
+                    pressureSumatoriaZone6 = pressureSumatoriaZone6 +  matrizDistribucion[i][j]
+            percentagePressureZone6 = (pressureSumatoriaZone6*1000)/maximaSumatoria
+            if percentagePressureZone6 > porcentajeSuperadoAlarma:
+                self.zonasActivas[1][2] = True
+                
+            else:
+                self.zonasActivas[1][2] = False
            
         ######### Zone 7 ############
-        pressureSumatoriaZone7 = 0
-        for i in range(14):
-            for j in range(28,43):
-                pressureSumatoriaZone7 = pressureSumatoriaZone7 +  matrizDistribucion[i][j]
-        percentagePressureZone7 = (pressureSumatoriaZone7*1000)/maximaSumatoria
-        if percentagePressureZone7 > porcentajeSuperadoAlarma:
-            self.zonasActivas[2][0] = True
-        else:
-            self.zonasActivas[2][0] = False
+        elif self.zona == 7:
+            pressureSumatoriaZone7 = 0
+            for i in range(14):
+                for j in range(28,43):
+                    pressureSumatoriaZone7 = pressureSumatoriaZone7 +  matrizDistribucion[i][j]
+            percentagePressureZone7 = (pressureSumatoriaZone7*1000)/maximaSumatoria
+            if percentagePressureZone7 > porcentajeSuperadoAlarma:
+                self.zonasActivas[2][0] = True
+            else:
+                self.zonasActivas[2][0] = False
           
         ######## Zone 8 #############
-        pressureSumatoriaZone8 = 0
-        for i in range(14,28):
-            for j in range(28,43):
-                pressureSumatoriaZone8 = pressureSumatoriaZone8 +  matrizDistribucion[i][j]
-        percentagePressureZone8 = (pressureSumatoriaZone8*1000)/maximaSumatoria
+        elif self.zona == 8:
+            pressureSumatoriaZone8 = 0
+            for i in range(14,28):
+                for j in range(28,43):
+                    pressureSumatoriaZone8 = pressureSumatoriaZone8 +  matrizDistribucion[i][j]
+            percentagePressureZone8 = (pressureSumatoriaZone8*1000)/maximaSumatoria
 
-        if percentagePressureZone8 > porcentajeSuperadoAlarma:
-            self.zonasActivas[2][1] = True
-        else:
-            self.zonasActivas[2][1] = False
+            if percentagePressureZone8 > porcentajeSuperadoAlarma:
+                self.zonasActivas[2][1] = True
+            else:
+                self.zonasActivas[2][1] = False
  
         ######### Zone 9 ############
-        pressureSumatoriaZone9 = 0
-        for i in range(28,43):
-            for j in range(28,43):
-                pressureSumatoriaZone9 = pressureSumatoriaZone9 +  matrizDistribucion[i][j]
-        percentagePressureZone9 = (pressureSumatoriaZone9*1000)/maximaSumatoria
-        if percentagePressureZone9 > porcentajeSuperadoAlarma:
-            self.zonasActivas[2][2] = True
-        else:
-            self.zonasActivas[2][2] = False
+        elif self.zona == 9:
+            pressureSumatoriaZone9 = 0
+            for i in range(28,43):
+                for j in range(28,43):
+                    pressureSumatoriaZone9 = pressureSumatoriaZone9 +  matrizDistribucion[i][j]
+            percentagePressureZone9 = (pressureSumatoriaZone9*1000)/maximaSumatoria
+            if percentagePressureZone9 > porcentajeSuperadoAlarma:
+                self.zonasActivas[2][2] = True
+            else:
+                self.zonasActivas[2][2] = False
+            self.zona = 0
             
         return self.zonasActivas
-
+interfazTiemposExposicion()
 

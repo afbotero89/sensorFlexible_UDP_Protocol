@@ -17,7 +17,7 @@ import socket
 import sys, struct
 #from pylab import *
 import tiemposDeExposicion
-import interfazTiemposExposicionSensor2
+#import interfazTiemposExposicionSensor2
 import time
 import sqlite3
 #ion()
@@ -35,8 +35,8 @@ class Ui_MainWindow(object):
         self.filas = 43;
         matriz = [[0 for x in range(self.columnas)] for x in range(self.filas)] 
         matriz[0][0] = 255
-        self.cronometro = tiemposDeExposicion.Cronometro()
-        self.interfazTiempos = interfazTiemposExposicionSensor2.interfazTiemposExposicion()
+        #self.cronometro = tiemposDeExposicion.Cronometro()
+        #self.interfazTiempos = interfazTiemposExposicionSensor2.interfazTiemposExposicion()
         self.angle = 0
         self.contadorCalculaTiemposExposicion = 0
         
@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
             time.sleep(1)
             #self.sc.send(('*').encode())
             self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
-            print("conecto")
+            print("conecto 2")
         self.sqlDataBase()
         self.recibeDatos()
         
@@ -121,7 +121,9 @@ class Ui_MainWindow(object):
         try:
             while True:
                 #self.sc.settimeout(None)
+
                 buf = self.s.recv(10000)
+                print(len(buf))
          #       self.sc.settimeout(0)
                 #print(time.strftime("%H:%M:%S"))
                 info = [buf[i:i+1] for i in range(0, len(buf), 1)]
@@ -166,11 +168,13 @@ class Ui_MainWindow(object):
                         #self.sc.send(('*').encode())
                         #self.s.sendto(bytes('*','utf-8'), ("192.168.0.100", 2233))
                         self.iniciaTramaDeDatos = True
-                #self.sc.send(('*').encode())
                 self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
+                #time.sleep(0.2)
+                #self.sc.send(('*').encode())
                 #threading.Timer(0.01, self.recibeDatos()).start()
         except:
             print('nueva conexion')
+            self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
             self.recibeDatos()
             #self.sc.close()
             #self.s.close()
@@ -207,7 +211,7 @@ class Ui_MainWindow(object):
       self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
       if self.contadorCalculaTiemposExposicion == 10:
         self.contadorCalculaTiemposExposicion = 0
-        self.interfazTiempos.evento(self.vectorDesencriptado)
+        #self.interfazTiempos.evento(self.vectorDesencriptado)
 
       print("2")
       self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s' WHERE `id`='2'" % matrizDistribucion)
