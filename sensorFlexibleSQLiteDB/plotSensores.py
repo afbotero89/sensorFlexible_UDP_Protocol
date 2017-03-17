@@ -85,11 +85,17 @@ class Ui_MainWindow(object):
         plt.set_cmap('jet')
 
         self.sqlDataBase()
+        self.contadorImagenes = 0
         #plt.gca().invert_yaxis()
     def sqlDataBase(self):
+        
         self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
         self.c = self.conn.cursor()
 
+        self.conn1 = sqlite3.connect('transmisionContinua.db')
+        self.c1 = self.conn1.cursor()
+        self.c1.execute('''CREATE TABLE IF NOT EXISTS sensorFlexibleTransmision (id text, data1 real, data2 real, hour real)''')
+        self.conn1.commit()
 
     def printit(self):
         global vectorImagen, iniciaTramaDeDatos, vectorDatosDistribucionPresion, s
@@ -98,7 +104,7 @@ class Ui_MainWindow(object):
 
         
     def dibujarDistribucionPresionSensor1(self):
-        try:
+        #try:
             maximoValor = 0
             for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='1'"):
                 dataSensor1 = row[1]
@@ -116,9 +122,17 @@ class Ui_MainWindow(object):
 
             #Sensor 1
             matrizSensor2 = ast.literal_eval(str(dataSensor2))
+
+            self.contadorImagenes = self.contadorImagenes + 1
+            hora = time.strftime("%H:%M:%S")
+
+            #self.c1.execute("INSERT INTO sensorFlexibleTransmision VALUES ('%s',  '%s', '%s', '%s')" % (self.contadorImagenes, matrizSensor1, matrizSensor2 ,hora))
+
             matrizSensor2 = scipy.ndimage.rotate(matrizSensor2, -90)
 
             matrizCompleta = np.concatenate((matrizSensor1,matrizSensor2), axis=1)
+            
+            self.conn1.commit()
             #matrizCompleta = matrizDistribucion
             #Primera interpolacion vecino mas cercano
             for k in range(2):
@@ -218,9 +232,10 @@ class Ui_MainWindow(object):
 
             crop1 = sensorCompleto.crop((left1, top1, right1, bottom1))
             crop1.save("../appSensorFlexibleWebLocalMatplotlib/img/sensor2SinTiempos.jpeg","jpeg")
+            print('plot images')
             #sensorCompleto.save('/Applications/XAMPP/xamppfiles/htdocs/apps_rigido_flexible1/appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpg')
-        except:
-            pass
+        #except:
+            #pass
 
       
 

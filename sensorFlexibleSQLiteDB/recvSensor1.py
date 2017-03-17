@@ -39,6 +39,7 @@ class Ui_MainWindow(object):
         #self.interfazTiempos = interfazTiemposExposicionSensor1.interfazTiemposExposicion()
         self.angle = 0
         self.contadorCalculaTiemposExposicion = 0
+        self.contadorImagenes = 0
         
     def socketConnection(self):
         
@@ -46,8 +47,8 @@ class Ui_MainWindow(object):
         #self.s.settimeout(0.5)
         #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.UDP_IP = "192.168.0.124"
-        self.UDP_PORT = 10005
+        self.UDP_IP = "192.168.0.125"
+        self.UDP_PORT = 10000
 
         self.UDP_IP_CLIENT = "192.168.0.100"
         self.UDP_PORT_CLIENT = 2233
@@ -67,24 +68,27 @@ class Ui_MainWindow(object):
         
         
     def sqlDataBase(self):
-        print('sql database')
+        
         self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
         self.c = self.conn.cursor()
         #self.c.execute("DELETE FROM `sensorSuperior` WHERE 1")
         # Create table
-        self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible
-                     (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
+        self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
         # Insert a row of data
         for row in self.c.execute("SELECT * FROM sensorFlexible WHERE 1"):
             print(row[0])
             if row[0] == '1':
-                print('datos insertados')
                 self.campoSensor1Creado = True
 
         if self.campoSensor1Creado == False:
             self.campoSensor1Creado = True
             self.c.execute("INSERT INTO sensorFlexible VALUES ('1','initValue sensor 1','True','0','initValue times 1')")
         self.conn.commit()
+
+        self.conn1 = sqlite3.connect('datosSensor1Respiracion.db')
+        self.c1 = self.conn1.cursor()
+        self.c1.execute('''CREATE TABLE IF NOT EXISTS sensorFlexibleTransmision (id text, data real, hour real, angle text)''')
+        self.conn1.commit()
         
     def desencriptarVector(self,vector):
         n = len(vector);
@@ -125,7 +129,8 @@ class Ui_MainWindow(object):
 
                 buf = self.s.recv(10000)
          #       self.sc.settimeout(0)
-                print(len(buf))
+                print(time.strftime("%H:%M:%S"))
+                #print(len(buf))
                 if len(buf)<10000:
                 
                     info = [buf[i:i+1] for i in range(0, len(buf), 1)]
@@ -139,7 +144,7 @@ class Ui_MainWindow(object):
                           if valorDecimal == 255:
                             #print(time.strftime("%H:%M:%S"), "angulo:", self.angle, len(self.vectorDatosDistribucionPresion))
                             self.angle = self.vectorDatosDistribucionPresion[len(self.vectorDatosDistribucionPresion) - 2]
-                            self.angle = 90-self.angle
+                            #self.angle = 90-self.angle
                             self.primerByte = self.vectorDatosDistribucionPresion[len(self.vectorDatosDistribucionPresion) - 4]
                             self.segundoByte = self.vectorDatosDistribucionPresion[len(self.vectorDatosDistribucionPresion) - 3]
                             self.numeroBytes = self.primerByte*255 + self.segundoByte
@@ -199,6 +204,15 @@ class Ui_MainWindow(object):
 ##                matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1])/8
 ##
       maximoValor = 0
+      print("inserta datos")
+
+
+      hora = time.strftime("%H:%M:%S")
+
+      #self.contadorImagenes = self.contadorImagenes + 1
+      #self.c1.execute("INSERT INTO sensorFlexibleTransmision VALUES ('%s',  '%s', '%s', '%s')" % (self.contadorImagenes, matrizDistribucion,hora,angle))
+      #self.conn1.commit()
+      
       
       for i in range(self.filas):
         for j in range(self.columnas):
@@ -207,16 +221,14 @@ class Ui_MainWindow(object):
             if matrizDistribucion[i][j] > 200:
                 matrizDistribucion[i][j] = 240
 
-      
+      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='1'" % (matrizDistribucion, angle))
+      self.conn.commit()
       #data = scipy.ndimage.zoom(matrizDistribucion, 1)
       
       self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
       if self.contadorCalculaTiemposExposicion == 10:
         self.contadorCalculaTiemposExposicion = 0
         #self.interfazTiempos.evento(self.vectorDesencriptado)
-      print("1")
-      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='1'" % (matrizDistribucion, angle))
-      self.conn.commit()
 
 
     def conectarSensor(self):

@@ -22,6 +22,7 @@ html {
 /**
    * Remove default margin.
    */
+
 #grad {
 background: #f0f9ff; /* Old browsers */
 background: -moz-linear-gradient(top, #f0f9ff 0%, #cbebff 47%, #a1dbff 100%); /* FF3.6-15 */
@@ -431,7 +432,7 @@ body {
   font-weight: normal;
   line-height: 1.5;
   color: #0a0a0a;
-  background: #dcdcdc;
+  background: #444444;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 

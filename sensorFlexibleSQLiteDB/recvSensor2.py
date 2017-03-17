@@ -46,8 +46,8 @@ class Ui_MainWindow(object):
         #self.s.settimeout(0.5)
         #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.UDP_IP = "192.168.0.124"
-        self.UDP_PORT = 10006
+        self.UDP_IP = "192.168.0.125"
+        self.UDP_PORT = 10001
 
         self.UDP_IP_CLIENT = "192.168.0.101"
         self.UDP_PORT_CLIENT = 2233
@@ -123,7 +123,8 @@ class Ui_MainWindow(object):
                 #self.sc.settimeout(None)
 
                 buf = self.s.recv(10000)
-                print(len(buf))
+                print(time.strftime("%H:%M:%S"))
+                #print(len(buf))
          #       self.sc.settimeout(0)
                 #print(time.strftime("%H:%M:%S"))
                 info = [buf[i:i+1] for i in range(0, len(buf), 1)]
@@ -213,7 +214,7 @@ class Ui_MainWindow(object):
         self.contadorCalculaTiemposExposicion = 0
         #self.interfazTiempos.evento(self.vectorDesencriptado)
 
-      print("2")
+      print("inserta en matriz")
       self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s' WHERE `id`='2'" % matrizDistribucion)
       self.conn.commit()
       

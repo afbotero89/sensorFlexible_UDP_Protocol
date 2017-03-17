@@ -13,7 +13,7 @@ include('index.html');
 
 <div style = "position: absolute; right: 40px;">
 <table width="100%" border="0" cellpadding="2">
-<tr>
+    <tr>
         <td align="right">
            <img id="sensor1" src="" />
         </td>
@@ -25,10 +25,11 @@ include('index.html');
         </td>
     </tr>
 </table>
+
 </div>
 
 <div style = "position: absolute; right: 10px;">
-  <label  id="angle_Label" align="center">Inclinaci&oacute;n:<br> 0&#176;   </label>
+  <label  id="angle_Label" align="center"><p style="color:white;font-family:helvetica;font-size: 25px">Inclinaci&oacute;n:<br> 0&#176;   </p></label>
   <img id="angle_Image" WIDTH='100' HEIGHT='70' src="./img/Cama 400X400/Cama 400X400.00002.png" align="center"/>
 </div>
 
@@ -120,7 +121,8 @@ include('index.html');
                   }else{
                       document.getElementById('angle_Label').innerHTML = "Inclinaci&oacute;n:<br>" + array[1] + "&#176;";
                   }
-                  
+                  document.getElementById('angle_Label').style.color = "white";
+                  document.getElementById('angle_Label').style.fontSize = "20px";
                 }
               }
             });
@@ -132,10 +134,10 @@ include('index.html');
         
         if(sensorConectado == false){
           sensorConectado = true
-          document.getElementById('imageConnection').src = "./img/wificonnected.png"
+          document.getElementById('imageConnection').src = "./img/wifiDisconnected.png"
         }else{
           sensorConectado = false
-          document.getElementById('imageConnection').src = "./img/wificonnected.png"
+          document.getElementById('imageConnection').src = "./img/wifiDisconnected.png"
         }
         
       }
@@ -166,3 +168,4 @@ include('index.html');
 </body> 
 </center>                       
 </html>
+
