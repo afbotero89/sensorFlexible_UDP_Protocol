@@ -5,7 +5,7 @@
 # Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
-
+# para ejecutar el codigo python3 recvSensor1.py 192.168.0.108 10000 192.168.0.107 2233 1
 
 import socket
 import sys
@@ -21,6 +21,15 @@ import tiemposDeExposicion
 import time
 import sqlite3
 #ion()
+
+UDP_IP = sys.argv[1]
+UDP_PORT = sys.argv[2]
+
+UDP_IP_CLIENT = sys.argv[3]
+UDP_PORT_CLIENT = sys.argv[4]
+
+# Para esta version de la sabana, el sensor tiene dos modulos wifi, por tal razon se almacenan en bases de datos distintas su informacion
+idSensor = sys.argv[5]
 
 maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
 sys.setrecursionlimit(maxint)
@@ -47,11 +56,11 @@ class Ui_MainWindow(object):
         #self.s.settimeout(0.5)
         #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.UDP_IP = "192.168.0.108"
-        self.UDP_PORT = 10000
+        self.UDP_IP = UDP_IP
+        self.UDP_PORT = UDP_PORT
 
-        self.UDP_IP_CLIENT = "192.168.0.107"
-        self.UDP_PORT_CLIENT = 2233
+        self.UDP_IP_CLIENT = UDP_IP_CLIENT
+        self.UDP_PORT_CLIENT = UDP_PORT_CLIENT
 
         print("escuchando",self.UDP_IP, self.UDP_PORT)
         self.s.bind((self.UDP_IP, self.UDP_PORT))
@@ -75,14 +84,14 @@ class Ui_MainWindow(object):
         # Create table
         self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
         # Insert a row of data
-        for row in self.c.execute("SELECT * FROM sensorFlexible WHERE 1"):
+        for row in self.c.execute("SELECT * FROM sensorFlexible WHERE '%s'" % idSensor):
             print(row[0])
-            if row[0] == '1':
+            if row[0] == idSensor:
                 self.campoSensor1Creado = True
 
         if self.campoSensor1Creado == False:
             self.campoSensor1Creado = True
-            self.c.execute("INSERT INTO sensorFlexible VALUES ('1','initValue sensor 1','True','0','initValue times 1')")
+            self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % idSensor)
         self.conn.commit()
 
         self.conn1 = sqlite3.connect('datosSensor1Respiracion.db')
@@ -221,7 +230,7 @@ class Ui_MainWindow(object):
             if matrizDistribucion[i][j] > 200:
                 matrizDistribucion[i][j] = 240
 
-      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='1'" % (matrizDistribucion, angle))
+      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizDistribucion, angle, idSensor))
       self.conn.commit()
       #data = scipy.ndimage.zoom(matrizDistribucion, 1)
       
