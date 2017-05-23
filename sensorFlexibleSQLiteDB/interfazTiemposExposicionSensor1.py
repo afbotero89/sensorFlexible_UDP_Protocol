@@ -1,3 +1,4 @@
+# forma de ejecutar interfaz tiempos de exposicion
 from PIL import Image, ImageDraw
 import matplotlib
 matplotlib.use('Agg')
@@ -11,7 +12,7 @@ import sqlite3
 import ast
 import scipy.ndimage
 ion()
-
+idSensor = sys.argv[1]
 
 
 maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
@@ -69,7 +70,7 @@ class interfazTiemposExposicion:
 
     def evento(self):
         while True:
-            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='1'"):
+            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % idSensor):
                 dataSensor1 = row[1]
 
 

@@ -49,27 +49,18 @@ class Ui_MainWindow(object):
         matriz = [[0 for x in range(self.columnas)] for x in range(self.filas)] 
         #matriz[0][0] = 255
         matrizSensor2 = [[0 for x in range(self.columnas)] for x in range(self.filas)] 
-        #matrizSensor2[0][0] = 255
         matrizCompleta = np.concatenate((matriz,matrizSensor2),axis=1)
-        #matrizCompleta = matriz
+
         matrizCompleta[0][0] = 255
 
-        #matrizCompleta[0][0] = 255
         self.initData = scipy.ndimage.zoom(matrizCompleta, 3)
         self.figSensor1 = plt.figure(figsize=(16,8),frameon=False)
         self.figSensor1.set_size_inches(16,8)
         ax = plt.Axes(self.figSensor1, [0., 0., 1., 1.])
         ax.set_axis_off()
         self.figSensor1.add_axes(ax)
-        #self.figSensor1.set_size_inches(9,9)
         self.figSensor1.canvas.draw()
-        #self.figSensor1.canvas.toolbar.pack_forget()
-        #self.figSensor1.suptitle('Sensor 1', fontsize = 14, fontweight = 'light')
         self.figSensor1.canvas.set_window_title('Sensor 1')
-        
-        #axis = plt.gca()
-        #axis.get_xaxis().set_visible(True)
-        #axis.get_yaxis().set_visible(True)
 
         self.imagenSensor1 = plt.imshow(self.initData, interpolation = 'nearest')
         #self.figSensor1.tight_layout()
@@ -110,11 +101,6 @@ class Ui_MainWindow(object):
                 dataSensor1 = row[1]
             for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='2'"):
                 dataSensor2 = row[1]
-            
-            #      for i in range(self.filas):
-            #         for j in range(self.columnas):
-            #            if (matrizDistribucion[i][j] > maximoValor):
-            #               maximoValor = matrizDistribucion[i][j]
 
             #Sensor 1
             matrizSensor1 = ast.literal_eval(str(dataSensor1))
@@ -142,69 +128,8 @@ class Ui_MainWindow(object):
                             matrizCompleta[i][j] = (matrizCompleta[i+1][j] + matrizCompleta[i-1][j] + matrizCompleta[i][j-1] + matrizCompleta[i][j+1] + matrizCompleta[i+1][j+1] + matrizCompleta[i-1][j+1] + matrizCompleta[i-1][j-1] + matrizCompleta[i+1][j-1])/8
                             if matrizCompleta[i][j] > 240:
                                 matrizCompleta[i][j] = 240
-            #Segunda interpolacion vecino mas cercano
 
-            #      if i > 0 and i < 42 and j > 0 and j < 42:
-                      
-             #         matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1] + matrizDistribucion[i+1][j+1] + matrizDistribucion[i-1][j+1] + matrizDistribucion[i-1][j-1] + matrizDistribucion[i+1][j-1])/8
-              #        if(i > 40 or j < 4):
-               #         matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1] + matrizDistribucion[i+1][j+1] + matrizDistribucion[i-1][j+1] + matrizDistribucion[i-1][j-1] + matrizDistribucion[i+1][j-1])/8
-                  
-
-            # Correccion de frontera, vecino mas cercano, para i = 48    
-
-            #for i in range(self.filas):
-            # for j in range(self.columnas):
-                # Correccion para i
-                # Para i = 0
-            #  if (i == 0) and (j != 0) and (j != self.columnas - 1):
-                #matrizDistribucion[i][j] = (matrizDistribucion[i][j-1] + matrizDistribucion[i+1][j-1] + matrizDistribucion[i+1][j] + matrizDistribucion[i+1][j+1] + matrizDistribucion[i][j+1])/5
-             #   matrizDistribucion[i][j] =  (matrizDistribucion[i+1][j] + matrizDistribucion[i+2][j] + matrizDistribucion[i+3][j] + matrizDistribucion[i][j])/3
-                # Para i = 48  
-              #if (i == self.filas - 1) and (j != 0) and (j != self.columnas - 1):
-                #matrizDistribucion[i][j] = (matrizDistribucion[i][j-1] + matrizDistribucion[i-1][j-1] + matrizDistribucion[i-1][j] + matrizDistribucion[i-1][j+1] + matrizDistribucion[i][j+1])/5
-               # matrizDistribucion[i][j] = (matrizDistribucion[i-1][j] + matrizDistribucion[i-2][j] + matrizDistribucion[i-3][j] + matrizDistribucion[i][j])/3
-                # Correccion para j
-                # Para j = 48
-              #if j == (self.columnas - 1) and i != (self.filas - 1) and i != 0:
-                #matrizDistribucion[i][j] = (matrizDistribucion[i-1][j] + matrizDistribucion[i-1][j-1] + matrizDistribucion[i][j-1] + matrizDistribucion[i+1][j-1] + matrizDistribucion[i+1][j])/5
-               # matrizDistribucion[i][j] = (matrizDistribucion[i][j-1] + matrizDistribucion[i][j-2] + matrizDistribucion[i][j-3] + matrizDistribucion[i][j])/3
-                # Para j = 0
-              #if j == 0 and i != (self.filas - 1) and i != 0:
-                #matrizDistribucion[i][j] = (matrizDistribucion[i-1][j] + matrizDistribucion[i-1][j+1] + matrizDistribucion[i][j+1] + matrizDistribucion[i+1][j+1] + matrizDistribucion[i+1][j])/5
-               # matrizDistribucion[i][j] = (matrizDistribucion[i][j+1] + matrizDistribucion[i][j+2] + matrizDistribucion[i][j+3] + matrizDistribucion[i][j])/3
-
-
-            #for i in range(self.filas):
-              
-            #   for j in range(self.columnas):
-                
-            #      if matrizDistribucion[i][j] < 0:
-             #       matrizDistribucion[i][j] = 0
-
-            #              if matrizDistribucion[i][j] > 0:
-                      
-            #                 matrizDistribucion[i][j] = matrizDistribucion[i][j]*4
-            ##              if matrizDistribucion[i][j] < 100:
-            ##                  
-            ##                  matrizDistribucion[i][j] = matrizDistribucion[i][j]*2
-            #              if matrizDistribucion[i][j] > 200:
-                      
-            #                 matrizDistribucion[i][j] = 230
-            ##              if matrizDistribucion[i][j] >= maximoValor:
-            ##                  maximoValor = matrizDistribucion[i][j]
-
-            #rotate_img = scipy.ndimage.rotate(matrizDistribucion, 0)
-            #rotate_img = scipy.ndimage.rotate(matrizDistribucion, -90)
             data = scipy.ndimage.zoom(matrizCompleta, 3)
-    ##        except:
-    ##          print("except")
-    ##          data = scipy.ndimage.zoom(self.initData, 3)
-            #for i in range(len(data)):
-                #for j in range(len(data[1])):
-                    #data[i][j]=data[i][j] + 18
-            #plt.contour(data, linewidths=1)
-            #plt.imshow(data, interpolation = 'bilinear')
           
             plt.set_cmap('jet')
 
