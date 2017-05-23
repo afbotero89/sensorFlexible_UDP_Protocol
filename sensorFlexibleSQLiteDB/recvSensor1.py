@@ -47,10 +47,10 @@ class Ui_MainWindow(object):
         #self.s.settimeout(0.5)
         #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.UDP_IP = "192.168.0.125"
+        self.UDP_IP = "192.168.0.108"
         self.UDP_PORT = 10000
 
-        self.UDP_IP_CLIENT = "192.168.0.100"
+        self.UDP_IP_CLIENT = "192.168.0.107"
         self.UDP_PORT_CLIENT = 2233
 
         print("escuchando",self.UDP_IP, self.UDP_PORT)
@@ -216,7 +216,7 @@ class Ui_MainWindow(object):
       
       for i in range(self.filas):
         for j in range(self.columnas):
-            matrizDistribucion[i][j] = matrizDistribucion[i][j]*20
+            matrizDistribucion[i][j] = matrizDistribucion[i][j]*25
 
             if matrizDistribucion[i][j] > 200:
                 matrizDistribucion[i][j] = 240

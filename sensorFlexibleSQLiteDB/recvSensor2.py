@@ -46,10 +46,10 @@ class Ui_MainWindow(object):
         #self.s.settimeout(0.5)
         #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.UDP_IP = "192.168.0.125"
+        self.UDP_IP = "192.168.0.108"
         self.UDP_PORT = 10001
 
-        self.UDP_IP_CLIENT = "192.168.0.101"
+        self.UDP_IP_CLIENT = "192.168.0.105"
         self.UDP_PORT_CLIENT = 2233
 
         self.s.bind((self.UDP_IP,self.UDP_PORT))

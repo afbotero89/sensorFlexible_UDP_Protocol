@@ -36,9 +36,12 @@ class Ui_MainWindow(object):
         self.sqlDataBase()
 
         while True:
-            averageVector = self.AveragePerRow()
-            self.insertPoint(averageVector)
-            time.sleep(0.2)
+            try:
+                averageVector = self.AveragePerRow()
+                self.insertPoint(averageVector)
+                time.sleep(0.2)
+            except:
+                pass
         
     def sqlDataBase(self):
         

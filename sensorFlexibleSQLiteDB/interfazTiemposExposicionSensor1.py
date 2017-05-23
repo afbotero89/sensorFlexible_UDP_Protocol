@@ -22,7 +22,7 @@ maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
 class interfazTiemposExposicion:
 
     def __init__(self):
-        self.tiempo = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
+        self.tiempo = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
         self.zona = 0
         #plt1.gca().invert_yaxis()
         axis = plt.gca()

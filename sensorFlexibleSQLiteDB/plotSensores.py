@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
 
         
     def dibujarDistribucionPresionSensor1(self):
-        #try:
+        try:
             maximoValor = 0
             for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='1'"):
                 dataSensor1 = row[1]
@@ -234,8 +234,8 @@ class Ui_MainWindow(object):
             crop1.save("../appSensorFlexibleWebLocalMatplotlib/img/sensor2SinTiempos.jpeg","jpeg")
             print('plot images')
             #sensorCompleto.save('/Applications/XAMPP/xamppfiles/htdocs/apps_rigido_flexible1/appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpg')
-        #except:
-            #pass
+        except:
+            pass
 
       
 
