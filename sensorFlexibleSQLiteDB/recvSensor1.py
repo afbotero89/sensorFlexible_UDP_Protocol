@@ -6,6 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 # para ejecutar el codigo python3 recvSensor1.py 192.168.0.108 10000 192.168.0.107 2233 1
+# Puerto 10000(cabeza), puerto 10001(piernas)
 
 import socket
 import sys
@@ -23,12 +24,12 @@ import sqlite3
 #ion()
 
 UDP_IP = sys.argv[1]
-UDP_PORT = sys.argv[2]
+UDP_PORT = int(sys.argv[2])
 
 UDP_IP_CLIENT = sys.argv[3]
-UDP_PORT_CLIENT = sys.argv[4]
+UDP_PORT_CLIENT = int(sys.argv[4])
 
-# Para esta version de la sabana, el sensor tiene dos modulos wifi, por tal razon se almacenan en bases de datos distintas su informacion
+# Para esta version de la sabana, el sensor tiene dos modulos wifi, por tal razon se almacenan en bases de datos distintas su informacion id=1(cabeza), id=2(piernas)
 idSensor = sys.argv[5]
 
 maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
