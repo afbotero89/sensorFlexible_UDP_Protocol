@@ -70,28 +70,31 @@ class interfazTiemposExposicion:
 
     def evento(self):
         while True:
-            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % idSensor):
-                dataSensor1 = row[1]
+            try:
+                for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % idSensor):
+                    dataSensor1 = row[1]
 
 
-            #Sensor 1
-            matrizSensor1 = ast.literal_eval(str(dataSensor1))
+                #Sensor 1
+                matrizSensor1 = ast.literal_eval(str(dataSensor1))
 
-            matrizDistribucionPresion = matrizSensor1
+                matrizDistribucionPresion = matrizSensor1
 
-            self.tiempo = self.cronometro.calculaTiempo()
-            for i in range(3):
-                for j in range(3):
-                    if self.zonasActivas[i][j] == True and self.zonaActivada[i][j] == False:
-                        self.zonaActivada[i][j] = True
-                        self.cronometro.activaZonaDePresion(i,j)
-                    if self.zonasActivas[i][j] == False and self.zonaActivada[i][j] == True:
-                        self.zonaActivada[i][j] = False
-                        self.cronometro.desactivaZonaDePresion(i,j)
-                        
-            #self.zonasActivas = zonasActivas
-            self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
-            self.dibujaMatriz()
+                self.tiempo = self.cronometro.calculaTiempo()
+                for i in range(3):
+                    for j in range(3):
+                        if self.zonasActivas[i][j] == True and self.zonaActivada[i][j] == False:
+                            self.zonaActivada[i][j] = True
+                            self.cronometro.activaZonaDePresion(i,j)
+                        if self.zonasActivas[i][j] == False and self.zonaActivada[i][j] == True:
+                            self.zonaActivada[i][j] = False
+                            self.cronometro.desactivaZonaDePresion(i,j)
+                            
+                #self.zonasActivas = zonasActivas
+                self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
+                self.dibujaMatriz()
+            except:
+                pass
         #print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2])
 
     def dibujaMatriz(self):
@@ -146,7 +149,7 @@ class interfazTiemposExposicion:
                 cell.set_edgecolor('k')
 
         
-        self.fig1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/tablaTiemposExposicionSensor1.png')
+        self.fig1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/tablaTiemposExposicionSensor' + idSensor + '.png')
         #figure(2).tight_layout()                
         #figure(2).canvas.draw()
         #plt1.cla()
