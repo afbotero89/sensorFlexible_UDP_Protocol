@@ -78,6 +78,9 @@ class interfazTiemposExposicion:
                 #Sensor 1
                 matrizSensor1 = ast.literal_eval(str(dataSensor1))
 
+                if idSensor == 2:
+                    matrizSensor1 = scipy.ndimage.rotate(matrizSensor1, -90)
+
                 matrizDistribucionPresion = matrizSensor1
 
                 self.tiempo = self.cronometro.calculaTiempo()
