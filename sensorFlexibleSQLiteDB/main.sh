@@ -1,2 +1,0 @@
-cd '/Applications/XAMPP/xamppfiles/htdocs/apps_rigido_flexible_UDP_web/sensorFlexibleSQLiteDB/'
-python3 recvSensor1.py 192.168.0.108 10000 192.168.0.110 2233 1 & python3 recvSensor1.py 192.168.0.108 10001 192.168.0.111 2233 2 & python3 plotSensores.py & python3 mergeTwoImage.py & python3 interfazTiemposExposicionSensor1.py 1 & python3 interfazTiemposExposicionSensor1.py 2  
