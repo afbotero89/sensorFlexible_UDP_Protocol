@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 # implement the default mpl key bindings
-from matplotlib.backend_bases import key_press_handler
+
 import threading
 import socket
 import time
@@ -13,20 +13,19 @@ import random
 import sqlite3
 import ast
 import scipy.ndimage
+from PIL import Image
 
 plt.ion()
 
 class Ui_MainWindow(object):
     def __init__(self):
+        self.fig, self.ax = plt.subplots(figsize=(16,2))
+        self.fig.set_size_inches(16,2)
+        
         self.listaX = []
         self.listaY = []
         self.vectorPromedio = []
         
-        self.contadorX = 0
-        self.contadorY = 0
-        
-        self.fig, self.ax = plt.subplots(figsize=(16,2))
-        self.fig.set_size_inches(16,2)
         ax = plt.Axes(self.fig, [0., 0., 1., 1.])
         ax.set_axis_off()
         self.fig.add_axes(ax)

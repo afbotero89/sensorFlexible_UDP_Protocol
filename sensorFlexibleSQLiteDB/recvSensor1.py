@@ -214,7 +214,7 @@ class Ui_MainWindow(object):
 ##                matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1])/8
 ##
       maximoValor = 0
-      print("inserta datos")
+      print("inserta datos", idSensor)
 
 
       hora = time.strftime("%H:%M:%S")

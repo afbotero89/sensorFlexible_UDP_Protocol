@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 # implement the default mpl key bindings
-from matplotlib.backend_bases import key_press_handler
 import threading
 import socket
 import time
@@ -40,6 +39,11 @@ class Ui_MainWindow(object):
             except:
                 pass
 
+    def sqlDataBase(self):
+        
+        self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
+        self.c = self.conn.cursor()
+        
     def variablesReset(self):
 
         self.contadorY = 0
@@ -75,10 +79,6 @@ class Ui_MainWindow(object):
 
         self.ax.set_xticklabels([])
         self.labels = []    
-    def sqlDataBase(self):
-        
-        self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
-        self.c = self.conn.cursor()
 
 
     def AveragePerRow(self):
@@ -127,13 +127,14 @@ class Ui_MainWindow(object):
 
                 averageColumn_Zona6 = averageColumn_Zona6 + matrizConcatenada[i,j]
                 
-        # Saca promedios por zonas asumiendo que el maximo de ADC puede ser cercano a 150               
-        averageColumn_Zona1 = (averageColumn_Zona1/602)*(80.0/110.0)  + 500
-        averageColumn_Zona2 = (averageColumn_Zona2/602)*(80.0/110.0)  + 400
-        averageColumn_Zona3 = (averageColumn_Zona3/602)*(80.0/110.0)  + 300
-        averageColumn_Zona4 = (averageColumn_Zona4/602)*(80.0/110.0)  + 200
-        averageColumn_Zona5 = (averageColumn_Zona5/602)*(80.0/110.0)  + 100
-        averageColumn_Zona6 = (averageColumn_Zona6/602)*(80.0/110.0)
+        # Saca promedios por zonas asumiendo que el maximo de ADC puede ser cercano a 150 
+        maximoPromedio = 80              
+        averageColumn_Zona1 = (averageColumn_Zona1/602)*(80.0/maximoPromedio)  + 500
+        averageColumn_Zona2 = (averageColumn_Zona2/602)*(80.0/maximoPromedio)  + 400
+        averageColumn_Zona3 = (averageColumn_Zona3/602)*(80.0/maximoPromedio)  + 300
+        averageColumn_Zona4 = (averageColumn_Zona4/602)*(80.0/maximoPromedio)  + 200
+        averageColumn_Zona5 = (averageColumn_Zona5/602)*(80.0/maximoPromedio)  + 100
+        averageColumn_Zona6 = (averageColumn_Zona6/602)*(80.0/maximoPromedio)
 
         #print("datos:", averageColumn_Zona1, averageColumn_Zona2, averageColumn_Zona3, averageColumn_Zona4, averageColumn_Zona5, averageColumn_Zona6)
 
