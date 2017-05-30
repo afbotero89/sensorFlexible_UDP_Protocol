@@ -8,14 +8,14 @@ class Cronometro:
         # Variables sensor 1
         self.FMT = '%H:%M:%S'
         self.matrizZonasActivadas = [[False,False,False],[False,False,False],[False,False,False]]
-        self.matrizHorasDeActivacion = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
-        self.matrizTiempoTranscurrido = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
+        self.matrizHorasDeActivacion = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
+        self.matrizTiempoTranscurrido = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
 
         # Variables sensor 2
 
         self.matrizZonasActivadasSensor2 = [[False,False,False],[False,False,False],[False,False,False]]
-        self.matrizHorasDeActivacionSensor2 = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
-        self.matrizTiempoTranscurridoSensor2 = [['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00'],['0:00:00','0:00:00','0:00:00']]
+        self.matrizHorasDeActivacionSensor2 = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
+        self.matrizTiempoTranscurridoSensor2 = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
 
         self.matrizZonasFilas = 3
         self.matrizZonasColumnas = 3
@@ -29,8 +29,8 @@ class Cronometro:
 
     def desactivaZonaDePresion(self,x,y):
         self.matrizZonasActivadas[x][y] = False
-        self.matrizHorasDeActivacion[x][y] = '0:00:00'
-        self.matrizTiempoTranscurrido[x][y] = '0:00:00'
+        self.matrizHorasDeActivacion[x][y] = '00:00:00'
+        self.matrizTiempoTranscurrido[x][y] = '00:00:00'
                 
     def calculaTiempo(self):
         now = datetime.now()
@@ -51,8 +51,8 @@ class Cronometro:
 
     def desactivaZonaDePresionSensor2(self,x,y):
         self.matrizZonasActivadasSensor2[x][y] = False
-        self.matrizHorasDeActivacionSensor2[x][y] = '0:00:00'
-        self.matrizTiempoTranscurridoSensor2[x][y] = '0:00:00'
+        self.matrizHorasDeActivacionSensor2[x][y] = '00:00:00'
+        self.matrizTiempoTranscurridoSensor2[x][y] = '00:00:00'
                 
     def calculaTiempoSensor2(self):
         now = datetime.now()

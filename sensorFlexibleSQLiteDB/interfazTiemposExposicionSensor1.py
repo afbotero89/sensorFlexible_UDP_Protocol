@@ -11,6 +11,7 @@ import sys, struct
 import sqlite3
 import ast
 import scipy.ndimage
+import time
 ion()
 idSensor = sys.argv[1]
 
@@ -95,10 +96,15 @@ class interfazTiemposExposicion:
                             
                 #self.zonasActivas = zonasActivas
                 self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
-                self.dibujaMatriz()
+                #self.dibujaMatriz()
+                tiemposString = str(self.tiempo[0][0]) + "," + str(self.tiempo[0][1]) + "," + str(self.tiempo[0][2]) + "," + str(self.tiempo[1][0]) + "," + str(self.tiempo[1][1]) + "," + str(self.tiempo[1][2]) + "," + str(self.tiempo[2][0]) + "," + str(self.tiempo[2][1]) + "," + str(self.tiempo[2][2])
+                self.c.execute("UPDATE `sensorFlexible` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, idSensor))
+                self.conn.commit()
+                print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2], "idSensor", idSensor)
+                time.sleep(0.5)
             except:
                 pass
-        #print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2])
+
 
     def dibujaMatriz(self):
         global pressureRegion

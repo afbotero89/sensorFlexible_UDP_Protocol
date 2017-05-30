@@ -79,26 +79,29 @@ class Ui_MainWindow(object):
         
     def sqlDataBase(self):
         
-        self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
-        self.c = self.conn.cursor()
-        #self.c.execute("DELETE FROM `sensorSuperior` WHERE 1")
-        # Create table
-        self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
-        # Insert a row of data
-        for row in self.c.execute("SELECT * FROM sensorFlexible WHERE '%s'" % idSensor):
-            print(row[0])
-            if row[0] == idSensor:
+        try:
+            self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
+            self.c = self.conn.cursor()
+            #self.c.execute("DELETE FROM `sensorSuperior` WHERE 1")
+            # Create table
+            self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
+            # Insert a row of data
+            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE '%s'" % idSensor):
+                print(row[0])
+                if row[0] == idSensor:
+                    self.campoSensor1Creado = True
+
+            if self.campoSensor1Creado == False:
                 self.campoSensor1Creado = True
+                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % idSensor)
+            self.conn.commit()
 
-        if self.campoSensor1Creado == False:
-            self.campoSensor1Creado = True
-            self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % idSensor)
-        self.conn.commit()
-
-        self.conn1 = sqlite3.connect('datosSensor1Respiracion.db')
-        self.c1 = self.conn1.cursor()
-        self.c1.execute('''CREATE TABLE IF NOT EXISTS sensorFlexibleTransmision (id text, data real, hour real, angle text)''')
-        self.conn1.commit()
+            self.conn1 = sqlite3.connect('datosSensor1Respiracion.db')
+            self.c1 = self.conn1.cursor()
+            self.c1.execute('''CREATE TABLE IF NOT EXISTS sensorFlexibleTransmision (id text, data real, hour real, angle text)''')
+            self.conn1.commit()
+        except:
+            pass
         
     def desencriptarVector(self,vector):
         n = len(vector);
