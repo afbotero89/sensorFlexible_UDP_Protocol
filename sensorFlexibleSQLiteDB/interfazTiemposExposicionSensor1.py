@@ -59,7 +59,8 @@ class interfazTiemposExposicion:
         self.zonasActivasSensor2 = [[False,False,False],[False,False,False],[False,False,False]]
         self.zonaActivadaSensor2 = [[False,False,False],[False,False,False],[False,False,False]]
         self.pressureRegionSensor2 = False
-        
+
+        self.campoTiemposExposicionCreado = False
         #plt1.show(block=False)
         print('inicia tiempos')
         self.sqlDataBase()
@@ -68,6 +69,22 @@ class interfazTiemposExposicion:
     def sqlDataBase(self):
         self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
         self.c = self.conn.cursor()
+
+        self.connTiempos = sqlite3.connect('estadisticas.db')
+        self.cTiempos = self.connTiempos.cursor()
+        #self.c.execute("DELETE FROM `sensorSuperior` WHERE 1")
+        # Crea tabla para los tiempos de exposicion
+        self.cTiempos.execute('''CREATE TABLE IF NOT EXISTS tiemposExposicion (id text, exposureTimes real)''')
+        # Insert a row of data
+        for row in self.cTiempos.execute("SELECT * FROM tiemposExposicion WHERE '%s'" % idSensor):
+            print(row[0])
+            if row[0] == idSensor:
+                self.campoTiemposExposicionCreado = True
+
+        if self.campoTiemposExposicionCreado == False:
+            self.campoTiemposExposicionCreado = True
+            self.cTiempos.execute("INSERT INTO tiemposExposicion VALUES ('%s','initValue times 1')" % idSensor)
+        self.connTiempos.commit()
 
     def evento(self):
         while True:
@@ -98,8 +115,9 @@ class interfazTiemposExposicion:
                 self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
                 #self.dibujaMatriz()
                 tiemposString = str(self.tiempo[0][0]) + "," + str(self.tiempo[0][1]) + "," + str(self.tiempo[0][2]) + "," + str(self.tiempo[1][0]) + "," + str(self.tiempo[1][1]) + "," + str(self.tiempo[1][2]) + "," + str(self.tiempo[2][0]) + "," + str(self.tiempo[2][1]) + "," + str(self.tiempo[2][2])
-                self.c.execute("UPDATE `sensorFlexible` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, idSensor))
-                self.conn.commit()
+                print("inserta datos")
+                self.cTiempos.execute("UPDATE `tiemposExposicion` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, idSensor))
+                self.connTiempos.commit()
                 print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2], "idSensor", idSensor)
                 time.sleep(0.5)
             except:

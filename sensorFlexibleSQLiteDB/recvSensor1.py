@@ -96,10 +96,6 @@ class Ui_MainWindow(object):
                 self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % idSensor)
             self.conn.commit()
 
-            self.conn1 = sqlite3.connect('datosSensor1Respiracion.db')
-            self.c1 = self.conn1.cursor()
-            self.c1.execute('''CREATE TABLE IF NOT EXISTS sensorFlexibleTransmision (id text, data real, hour real, angle text)''')
-            self.conn1.commit()
         except:
             pass
         

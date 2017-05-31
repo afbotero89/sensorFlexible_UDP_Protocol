@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
 
             matrizCompleta = np.concatenate((matrizSensor1,matrizSensor2), axis=1)
             
-            self.conn1.commit()
+            #self.conn1.commit()
             #matrizCompleta = matrizDistribucion
             #Primera interpolacion vecino mas cercano
             for k in range(2):
