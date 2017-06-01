@@ -29,6 +29,8 @@ class Ui_MainWindow(object):
         self.ax.set_xticklabels([])
         self.labels = []
 
+        self.campoPromediosCreado = False
+
         self.variablesReset()
         self.sqlDataBase()
 
@@ -43,6 +45,27 @@ class Ui_MainWindow(object):
         
         self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
         self.c = self.conn.cursor()
+
+        self.connPromedios = sqlite3.connect('estadisticasPromedios.db')
+        self.cPromedios = self.connPromedios.cursor()
+        #self.c.execute("DELETE FROM `sensorSuperior` WHERE 1")
+        # Crea tabla para los tiempos de exposicion
+        self.cPromedios.execute('''CREATE TABLE IF NOT EXISTS promediosPresionZonas (zoneID text, pressureAverageValue real)''')
+        # Insert a row of data
+        for row in self.cPromedios.execute("SELECT * FROM promediosPresionZonas WHERE '1'"):
+            print(row[0])
+            if row[0] == '6':
+                self.campoPromediosCreado = True
+
+        if self.campoPromediosCreado == False:
+            self.campoPromediosCreado = True
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('1','initValue times 1')")
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('2','initValue times 2')")
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('3','initValue times 3')")
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('4','initValue times 4')")
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('5','initValue times 5')")
+            self.cPromedios.execute("INSERT INTO promediosPresionZonas VALUES ('6','initValue times 6')")
+        self.connPromedios.commit()
         
     def variablesReset(self):
 
@@ -152,6 +175,36 @@ class Ui_MainWindow(object):
 
         self.p6_1.append(averageColumn_Zona6)
 
+        zona1STR = str(self.p1_1)
+        zona1STR = zona1STR[1:len(zona1STR)-1]
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=1" % zona1STR)
+        self.connPromedios.commit()
+
+        zona2STR = str(self.p2_1)
+        zona2STR = zona2STR[1:len(zona2STR)-1]
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=2" % zona2STR)
+        self.connPromedios.commit()
+
+        zona3STR = str(self.p3_1)
+        zona3STR = zona3STR[1:len(zona3STR)-1]        
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=3" % zona3STR)
+        self.connPromedios.commit()
+
+        zona4STR = str(self.p4_1)
+        zona4STR = zona4STR[1:len(zona4STR)-1]          
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=4" % zona4STR)
+        self.connPromedios.commit()
+
+        zona5STR = str(self.p5_1)
+        zona5STR = zona5STR[1:len(zona5STR)-1]         
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=5" % zona5STR)
+        self.connPromedios.commit()
+
+        zona6STR = str(self.p6_1)
+        zona6STR = zona6STR[1:len(zona6STR)-1] 
+        self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=6" % zona6STR)
+        self.connPromedios.commit()
+
         self.realTimeGraphs()
 
 
@@ -191,8 +244,8 @@ class Ui_MainWindow(object):
                  self.x, self.p4_1, 'k-',
                  self.x, self.p5_1, 'b-',
                  self.x, self.p6_1, 'k-', marker='o', markersize=3, linewidth=0.8)
-        self.fig.canvas.draw()
-        plt.savefig('GraficoPresion1.png',facecolor='#222222', edgecolor='none')
+        #self.fig.canvas.draw()
+        #plt.savefig('GraficoPresion1.png',facecolor='#222222', edgecolor='none')
         time.sleep(0.2)
         print("graficos presion")
         if(len(self.x)==60):
