@@ -20,7 +20,7 @@ from multiprocessing import Process
 import threading
 import scipy.ndimage
 import sys, struct
-import tiemposDeExposicion
+#import tiemposDeExposicion
 #import interfazTiemposExposicionSensor1
 from pylab import *
 #import pusher
@@ -54,8 +54,8 @@ class Ui_MainWindow(object):
         matrizCompleta[0][0] = 255
 
         self.initData = scipy.ndimage.zoom(matrizCompleta, 3)
-        self.figSensor1 = plt.figure(figsize=(16,8),frameon=False)
-        self.figSensor1.set_size_inches(16,8)
+        self.figSensor1 = plt.figure(figsize=(8,4),frameon=False)
+        self.figSensor1.set_size_inches(8,4)
         ax = plt.Axes(self.figSensor1, [0., 0., 1., 1.])
         ax.set_axis_off()
         self.figSensor1.add_axes(ax)
@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.vectorDatosDistribucionPresion = []
         self.vectorDesencriptado = []
         #self.vectorImagen = [255,0,45,2,0,184,3,0,107,3,0,117,2,0,112,5,0,18,7,0,7,6,0,1,12,14,2,0,3,4,0,1,2,0,9,2,0,7,9,9,47,45,26,7,0,24,10,11,15,3,0,25,7,7,14,0,62,14,0,19,3,7,6,0,7,5,0,17,10,47,54,32,0,24,5,11,49,51,0,26,5,2,0,40,255]
-        self.cronometro = tiemposDeExposicion.Cronometro()
+        #self.cronometro = tiemposDeExposicion.Cronometro()
         #self.interfazTiempos = interfazTiemposExposicionSensor1.interfazTiemposExposicion()
         self.iniciaTramaDeDatos = False
 
@@ -137,28 +137,8 @@ class Ui_MainWindow(object):
 
             self.figSensor1.canvas.draw()
             quality_val = 20
-            self.figSensor1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpg')
-            sensorCompleto = Image.open("../appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpg")
+            self.figSensor1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpeg')
 
-            width, height = sensorCompleto.size   # Get dimensions
-
-            left = 0
-            top = 0
-            right = width/2
-            bottom = height
-
-            left1 = width/2
-            top1 = 0
-            right1 = width
-            bottom1 = height
-
-            crop = sensorCompleto.crop((left, top, right, bottom))
-            crop.save("../appSensorFlexibleWebLocalMatplotlib/img/sensor1SinTiempos.jpeg","jpeg")
-
-            crop1 = sensorCompleto.crop((left1, top1, right1, bottom1))
-            crop1.save("../appSensorFlexibleWebLocalMatplotlib/img/sensor2SinTiempos.jpeg","jpeg")
-            print('plot images')
-            #sensorCompleto.save('/Applications/XAMPP/xamppfiles/htdocs/apps_rigido_flexible1/appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpg')
         except:
             pass
 

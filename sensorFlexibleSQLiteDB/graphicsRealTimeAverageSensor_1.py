@@ -1,33 +1,17 @@
-import matplotlib
-matplotlib.use('TKAgg')
-import matplotlib.pyplot as plt
 import numpy as np
 #from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 # implement the default mpl key bindings
 import threading
 import socket
 import time
-from matplotlib.figure import Figure
 import random
 import sqlite3
 import ast
 import scipy.ndimage
 from PIL import Image
 
-plt.ion()
-
 class Ui_MainWindow(object):
     def __init__(self):
-
-        self.fig, self.ax = plt.subplots(figsize=(24,8))
-        self.fig.set_size_inches(24,8)
-
-        ax = plt.Axes(self.fig, [0., 0., 1., 1.])
-        ax.set_axis_off()
-        self.fig.add_axes(ax)
-        
-        self.ax.set_xticklabels([])
-        self.labels = []
 
         self.campoPromediosCreado = False
 
@@ -99,9 +83,7 @@ class Ui_MainWindow(object):
 
         # Zona de presion 9
         self.p9_1 = []
-
-        self.ax.set_xticklabels([])
-        self.labels = []    
+   
 
 
     def AveragePerRow(self):
@@ -152,11 +134,11 @@ class Ui_MainWindow(object):
                 
         # Saca promedios por zonas asumiendo que el maximo de ADC puede ser cercano a 150 
         maximoPromedio = 80              
-        averageColumn_Zona1 = (averageColumn_Zona1/602)*(80.0/maximoPromedio)  + 500
+        averageColumn_Zona1 = (averageColumn_Zona1/602)*(80.0/maximoPromedio)  + 505
         averageColumn_Zona2 = (averageColumn_Zona2/602)*(80.0/maximoPromedio)  + 400
         averageColumn_Zona3 = (averageColumn_Zona3/602)*(80.0/maximoPromedio)  + 300
-        averageColumn_Zona4 = (averageColumn_Zona4/602)*(80.0/maximoPromedio)  + 200
-        averageColumn_Zona5 = (averageColumn_Zona5/602)*(80.0/maximoPromedio)  + 100
+        averageColumn_Zona4 = (averageColumn_Zona4/602)*(80.0/maximoPromedio)  + 180
+        averageColumn_Zona5 = (averageColumn_Zona5/602)*(80.0/maximoPromedio)  + 70
         averageColumn_Zona6 = (averageColumn_Zona6/602)*(80.0/maximoPromedio)
 
         #print("datos:", averageColumn_Zona1, averageColumn_Zona2, averageColumn_Zona3, averageColumn_Zona4, averageColumn_Zona5, averageColumn_Zona6)
@@ -205,53 +187,11 @@ class Ui_MainWindow(object):
         self.cPromedios.execute("UPDATE `promediosPresionZonas` SET `pressureAverageValue`= '%s' WHERE `zoneID`=6" % zona6STR)
         self.connPromedios.commit()
 
-        self.realTimeGraphs()
-
-
-    def realTimeGraphs(self):
-        hourData = time.strftime("%H:%M")
-        #print(hourData)
-        self.contadorY = self.contadorY + 1
-
-        plt.cla()
-        plt.grid(True)
-        plt.ylim([0,600])
-        plt.xlim([0,30])
-
-        # major ticks every 20, minor ticks every 5                                      
-        major_ticks_x = np.arange(0, 30, 1)                                              
-        minor_ticks_x = np.arange(0, 30, 0.1)
-
-        self.ax.tick_params(axis='x', colors='white')
-        self.ax.tick_params(axis='y', colors='white')
-        
-        self.ax.yaxis.label.set_color('white')
-        self.ax.xaxis.label.set_color('white')
-        
-        self.ax.set_xticks(major_ticks_x)                                                       
-        self.ax.set_xticks(minor_ticks_x, minor=True)  
-
-        for tick in self.ax.xaxis.get_major_ticks():
-            tick.label.set_fontsize(8)  
-        # red dashes, blue squares and green triangles
-        
-        self.labels.append(hourData)
-        self.labels[self.contadorY - 1] = hourData
-        self.ax.set_xticklabels(self.labels, rotation=70)
-        plt.plot(self.x, self.p1_1, 'b-',
-                 self.x, self.p2_1, 'k-',
-                 self.x, self.p3_1, 'b-',
-                 self.x, self.p4_1, 'k-',
-                 self.x, self.p5_1, 'b-',
-                 self.x, self.p6_1, 'k-', marker='o', markersize=3, linewidth=0.8)
-        #self.fig.canvas.draw()
-        #plt.savefig('GraficoPresion1.png',facecolor='#222222', edgecolor='none')
-        time.sleep(0.2)
-        print("graficos presion")
+        self.refreshPatientHistory()
         if(len(self.x)==60):
             self.variablesReset()
-            
-        self.refreshPatientHistory()
+
+
     def refreshPatientHistory(self):
         
         if len(self.x)<5:

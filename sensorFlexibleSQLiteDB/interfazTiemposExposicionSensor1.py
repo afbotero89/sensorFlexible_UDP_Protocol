@@ -26,22 +26,10 @@ class interfazTiemposExposicion:
     def __init__(self):
         self.tiempo = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
         self.zona = 0
-        #plt1.gca().invert_yaxis()
-        axis = plt.gca()
-        axis.get_xaxis().set_visible(False)
-        axis.get_yaxis().set_visible(False)
+
 
         self.cronometro = tiemposDeExposicion.Cronometro()
-        self.fig1 = plt1.figure(figsize=(8,8))
-        self.fig1.canvas.set_window_title('Tiempos sensor 1')
-        self.fig1.set_size_inches(8,8)
-        ax = plt.Axes(self.fig1, [0., 0., 1., 1.])
-        ax.set_axis_off()
-        self.fig1.add_axes(ax)
-
-        self.fig1.canvas.draw()
-        #self.fig1.canvas.toolbar.pack_forget()
-        self.tablaSensor1 = plt1.table(cellText=self.tiempo , colWidths = [0.2]*3, cellLoc = 'center', rowLoc = 'center', bbox=[0,0,1,1])
+        
 
 ##        self.cronometro = tiemposDeExposicion.Cronometro()
 ##        self.fig2 = plt1.figure(figsize = (4,4))
@@ -113,7 +101,6 @@ class interfazTiemposExposicion:
                             
                 #self.zonasActivas = zonasActivas
                 self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
-                #self.dibujaMatriz()
                 tiemposString = str(self.tiempo[0][0]) + "," + str(self.tiempo[0][1]) + "," + str(self.tiempo[0][2]) + "," + str(self.tiempo[1][0]) + "," + str(self.tiempo[1][1]) + "," + str(self.tiempo[1][2]) + "," + str(self.tiempo[2][0]) + "," + str(self.tiempo[2][1]) + "," + str(self.tiempo[2][2])
                 print("inserta datos")
                 self.cTiempos.execute("UPDATE `tiemposExposicion` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, idSensor))
@@ -123,71 +110,6 @@ class interfazTiemposExposicion:
             except:
                 pass
 
-
-    def dibujaMatriz(self):
-        global pressureRegion
-        #figure(2)
- #       the_table = plt1.table(cellText=tiempo , colWidths = [0.2]*3, cellLoc = 'center', rowLoc = 'center', bbox=[0,0,1,1])
-        #self.tablaSensor1.cell.set_text_props(tiempo)
-        axis = plt1.gca()
-        axis.get_xaxis().set_visible(False)
-        axis.get_yaxis().set_visible(False)
-        
-        for j in range(0,3):
-            for i in range(0,3):
-                
-                self.tablaSensor1.get_celld()[i,j].set_fontsize(40)
-
-                # Se hace espejo con respecto a la diagonal principal
-                
-                if i == j:
-                    cell = self.tablaSensor1.get_celld()[i,j]
-                else:
-                    cell = self.tablaSensor1.get_celld()[j,i]
-                #invertedMatrix = self.matrixTransformations(self.tiempo)
-
-
-                #activeZones = self.matrixTransformationsActiveZones(self.zonasActivas)
-
-                cell.set_text_props(text = '0' + str(self.tiempo[i][j]))
-                
-                try:
-                    tiempo = self.tiempo[i][j]
-                    if int(tiempo.total_seconds()) > 0 and int(tiempo.total_seconds()) < 10 :
-                        cell._text.set_color('black')
-
-                    if int(tiempo.total_seconds()) > 100:
-                        
-                        if self.zonasActivas[i][j] == True:
-                            #cell.set_color('r')
-                            pass
-                            #cell._text.set_color('white')
-                            #if self.pressureRegion == False:
-                             #   cell.set_color('r')
-                            #else:
-                             #   cell.set_color('w')
-                        #else:
-                         #   cell.set_color('w')
-                except:
-                    pass
-                if self.zonasActivas[i][j] == False:
-                    cell.set_color('w')
-                    cell._text.set_color('white')
-                cell.set_edgecolor('k')
-
-        
-        self.fig1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/tablaTiemposExposicionSensor' + idSensor + '.png')
-        #figure(2).tight_layout()                
-        #figure(2).canvas.draw()
-        #plt1.cla()
-        #plt1.clf()
-        
-        #if self.pressureRegion == False:
-         #   self.pressureRegion = True
-        #else:
-         #   self.pressureRegion = False            
-
-    # Funcion para hacer espejo sobre la diagonal principal
 
     def matrixTransformations(self, matrix):
         transformationMatrix = np.array([['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']])

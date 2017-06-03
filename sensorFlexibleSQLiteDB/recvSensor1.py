@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
 
                 buf = self.s.recv(10000)
          #       self.sc.settimeout(0)
-                print(time.strftime("%H:%M:%S"))
+                print(buf)
                 #print(len(buf))
                 if len(buf)<10000:
                 
