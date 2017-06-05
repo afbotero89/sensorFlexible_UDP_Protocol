@@ -137,7 +137,7 @@ class Ui_MainWindow(object):
 
             self.figSensor1.canvas.draw()
             quality_val = 20
-            self.figSensor1.savefig('../appSensorFlexibleWebLocalMatplotlib/img/sensor1.jpeg')
+            self.figSensor1.savefig('sensor1.jpeg')
 
         except:
             pass

@@ -195,33 +195,33 @@ class Ui_MainWindow(object):
     def refreshPatientHistory(self):
         
         if len(self.x)<5:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial1.png')
+            img = Image.open('../flexible1.1/img/historial1.png')
         elif len(self.x)>=5 and len(self.x)<10:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial1.1.png')
+            img = Image.open('../flexible1.1/img/historial1.1.png')
         elif len(self.x)>=10 and len(self.x)<15:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial2.png')
+            img = Image.open('../flexible1.1/img/historial2.png')
         elif len(self.x)>=15 and len(self.x)<20:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial2.1.png')
+            img = Image.open('../flexible1.1/img/historial2.1.png')
         elif len(self.x)>=20 and len(self.x)<25:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial3.png')
+            img = Image.open('../flexible1.1/img/historial3.png')
         elif len(self.x)>=25 and len(self.x)<30:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial3.1.png')
+            img = Image.open('../flexible1.1/img/historial3.1.png')
         elif len(self.x)>=30 and len(self.x)<35:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial4.png')
+            img = Image.open('../flexible1.1/img/historial4.png')
         elif len(self.x)>=35 and len(self.x)<40:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial4.1.png')
+            img = Image.open('../flexible1.1/img/historial4.1.png')
         elif len(self.x)>=40 and len(self.x)<45:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial5.png')
+            img = Image.open('../flexible1.1/img/historial5.png')
         elif len(self.x)>=45 and len(self.x)<50:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial5.1.png')
+            img = Image.open('../flexible1.1/img/historial5.1.png')
         elif len(self.x)>=50 and len(self.x)<55:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial6.png')
+            img = Image.open('../flexible1.1/img/historial6.png')
         elif len(self.x)>=55 and len(self.x)<59:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial6.1.png')
+            img = Image.open('../flexible1.1/img/historial6.1.png')
         elif len(self.x)>=59:
-            img = Image.open('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial7.png')
+            img = Image.open('../flexible1.1/img/historial7.png')
            
-        img.save('/Applications/XAMPP/xamppfiles/htdocs/flexible1.1/img/historial_main.png')
+        img.save('historial_main.png')
         #plt.show()
         
 plotsInstance = Ui_MainWindow()
