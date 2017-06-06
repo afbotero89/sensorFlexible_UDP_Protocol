@@ -21,6 +21,7 @@ import tiemposDeExposicion
 #import interfazTiemposExposicionSensor1
 import time
 import sqlite3
+from PIL import Image
 #ion()
 
 UDP_IP = sys.argv[1]
@@ -238,7 +239,18 @@ class Ui_MainWindow(object):
       self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
       if self.contadorCalculaTiemposExposicion == 10:
         self.contadorCalculaTiemposExposicion = 0
+
+      inclinacionIMU(angle)
         #self.interfazTiempos.evento(self.vectorDesencriptado)
+
+    def inclinacionIMU(self,angle):
+        print("angle",angle)
+        if (angle < 10):
+            inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV20000" + str(int(angle)) + ".jpg")
+            inclinacionImage.save("inclinacion.jpeg","jpeg")
+        elif (angle>=10):
+            inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV2000" + str(int(angle)) + ".jpg")
+            inclinacionImage.save("inclinacion.jpeg","jpeg")
 
 
     def conectarSensor(self):
