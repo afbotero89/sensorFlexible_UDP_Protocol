@@ -23,7 +23,7 @@ import time
 import sqlite3
 from PIL import Image
 #ion()
-
+print( sys.argv[0])
 UDP_IP = sys.argv[1]
 UDP_PORT = int(sys.argv[2])
 
@@ -215,7 +215,7 @@ class Ui_MainWindow(object):
 ##                matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1])/8
 ##
       maximoValor = 0
-      print("inserta datos", idSensor)
+
 
 
       hora = time.strftime("%H:%M:%S")
@@ -237,10 +237,11 @@ class Ui_MainWindow(object):
       #data = scipy.ndimage.zoom(matrizDistribucion, 1)
       
       self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
-      if self.contadorCalculaTiemposExposicion == 10:
+      if self.contadorCalculaTiemposExposicion == 50:
         self.contadorCalculaTiemposExposicion = 0
-
-      inclinacionIMU(angle)
+        print("inserta datos X", idSensor, angle)
+        if(idSensor=="1"):
+            self.inclinacionIMU(angle)
         #self.interfazTiempos.evento(self.vectorDesencriptado)
 
     def inclinacionIMU(self,angle):
@@ -248,7 +249,7 @@ class Ui_MainWindow(object):
         if (angle < 10):
             inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV20000" + str(int(angle)) + ".jpg")
             inclinacionImage.save("inclinacion.jpeg","jpeg")
-        elif (angle>=10):
+        elif (angle>=10 and angle <= 50): 
             inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV2000" + str(int(angle)) + ".jpg")
             inclinacionImage.save("inclinacion.jpeg","jpeg")
 
