@@ -240,18 +240,8 @@ class Ui_MainWindow(object):
       if self.contadorCalculaTiemposExposicion == 50:
         self.contadorCalculaTiemposExposicion = 0
         print("inserta datos X", idSensor, angle)
-        if(idSensor=="1"):
-            self.inclinacionIMU(angle)
         #self.interfazTiempos.evento(self.vectorDesencriptado)
 
-    def inclinacionIMU(self,angle):
-        print("angle",angle)
-        if (angle < 10):
-            inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV20000" + str(int(angle)) + ".jpg")
-            inclinacionImage.save("inclinacion.jpeg","jpeg")
-        elif (angle>=10 and angle <= 50): 
-            inclinacionImage = Image.open("../flexible1.1/img/inclinacionIMU/BedMonitoreoV2000" + str(int(angle)) + ".jpg")
-            inclinacionImage.save("inclinacion.jpeg","jpeg")
 
 
     def conectarSensor(self):
