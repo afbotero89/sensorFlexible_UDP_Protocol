@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'rigidoBotonesConexion.ui'
-#
-# Created by: PyQt5 UI code generator 5.5.1
-#
-# WARNING! All changes made in this file will be lost!
-# para ejecutar el codigo python3 recvSensor1.py 192.168.0.108 10000 192.168.0.107 2233 1
-# Puerto 10000(cabeza), puerto 10001(piernas)
-
 import socket
 import sys
 import binascii
@@ -22,23 +12,15 @@ import tiemposDeExposicion
 import time
 import sqlite3
 from PIL import Image
+
 #ion()
-print( sys.argv[0])
-UDP_IP = sys.argv[1]
-UDP_PORT = int(sys.argv[2])
-
-UDP_IP_CLIENT = sys.argv[3]
-UDP_PORT_CLIENT = int(sys.argv[4])
-
-# Para esta version de la sabana, el sensor tiene dos modulos wifi, por tal razon se almacenan en bases de datos distintas su informacion id=1(cabeza), id=2(piernas)
-idSensor = sys.argv[5]
 
 maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
 sys.setrecursionlimit(maxint)
 
 class Ui_MainWindow(object):
-    def __init__(self):
-        print("init")
+    def __init__(self, UDP_IP, UDP_PORT, UDP_IP_CLIENT, UDP_PORT_CLIENT, idSensor):
+        print("init", idSensor)
         self.vectorDatosDistribucionPresion = []
         self.vectorDesencriptado = []
         self.iniciaTramaDeDatos = False
@@ -46,34 +28,42 @@ class Ui_MainWindow(object):
         self.filas = 43;
         matriz = [[0 for x in range(self.columnas)] for x in range(self.filas)] 
         matriz[0][0] = 255
-        #self.cronometro = tiemposDeExposicion.Cronometro()
-        #self.interfazTiempos = interfazTiemposExposicionSensor1.interfazTiemposExposicion()
         self.angle = 0
-        self.contadorCalculaTiemposExposicion = 0
         self.contadorImagenes = 0
-        
-    def socketConnection(self):
-        
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #self.s.settimeout(0.5)
-        #self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        #self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
         self.UDP_IP = UDP_IP
         self.UDP_PORT = UDP_PORT
 
         self.UDP_IP_CLIENT = UDP_IP_CLIENT
         self.UDP_PORT_CLIENT = UDP_PORT_CLIENT
 
+        # Para esta version de la sabana, el sensor tiene dos modulos wifi, por tal razon se almacenan en bases de datos distintas su informacion id=1(cabeza), id=2(piernas)
+        self.idSensor = idSensor  
+        self.conectarSensor()     
+        
+    def socketConnection(self):
+        
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
         print("escuchando",self.UDP_IP, self.UDP_PORT)
         self.s.bind((self.UDP_IP, self.UDP_PORT))
         #self.s.listen(1)
         self.campoSensor1Creado = False
-        #self.sc, self.addr = self.s.accept()
-        for i in range(3):            
-            time.sleep(1)
+
+        self.s.settimeout(1)
+        while True:            
+            time.sleep(2)
             self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
-            #self.sc.send(('*').encode())
-            print("conecto 1")
+            print("envia peticion", self.idSensor)
+            try:
+                buf = self.s.recv(10)
+                if(len(buf)>5):
+                    self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
+                    break
+            except:
+                print("Time out error")
+        print("conecto", self.idSensor)
+        self.s.settimeout(2)
         self.sqlDataBase()
         self.recibeDatos()
         
@@ -87,14 +77,14 @@ class Ui_MainWindow(object):
             # Create table
             self.c.execute('''CREATE TABLE IF NOT EXISTS sensorFlexible (id text, data real, connectionStatus text, angle text, exposureTimes real)''')
             # Insert a row of data
-            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE '%s'" % idSensor):
+            for row in self.c.execute("SELECT * FROM sensorFlexible WHERE '%s'" % self.idSensor):
                 print(row[0])
-                if row[0] == idSensor:
+                if row[0] == self.idSensor:
                     self.campoSensor1Creado = True
 
             if self.campoSensor1Creado == False:
                 self.campoSensor1Creado = True
-                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % idSensor)
+                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % self.idSensor)
             self.conn.commit()
 
         except:
@@ -202,29 +192,10 @@ class Ui_MainWindow(object):
         
     def dibujarDistribucionPresion(self, matrizDistribucion, angle):
       
-##      for i in range(self.filas):
-##        for j in range(self.columnas):
-##          if matrizDistribucion[i][j] < 0:
-##              matrizDistribucion[i][j] = 0
-##          else:
-##              matrizDistribucion[i][j] = matrizDistribucion[i][j] + 20
-            
-##      for i in range(self.filas-1):
-##        for j in range(self.columnas-1):
-##            if i > 0 and j > 0:
-##                matrizDistribucion[i][j] = (matrizDistribucion[i+1][j] + matrizDistribucion[i-1][j] + matrizDistribucion[i][j-1] + matrizDistribucion[i][j+1])/8
-##
       maximoValor = 0
-
-
 
       hora = time.strftime("%H:%M:%S")
 
-      #self.contadorImagenes = self.contadorImagenes + 1
-      #self.c1.execute("INSERT INTO sensorFlexibleTransmision VALUES ('%s',  '%s', '%s', '%s')" % (self.contadorImagenes, matrizDistribucion,hora,angle))
-      #self.conn1.commit()
-      
-      
       for i in range(self.filas):
         for j in range(self.columnas):
             matrizDistribucion[i][j] = matrizDistribucion[i][j]*25
@@ -232,16 +203,8 @@ class Ui_MainWindow(object):
             if matrizDistribucion[i][j] > 200:
                 matrizDistribucion[i][j] = 240
 
-      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizDistribucion, angle, idSensor))
+      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizDistribucion, angle, self.idSensor))
       self.conn.commit()
-      #data = scipy.ndimage.zoom(matrizDistribucion, 1)
-      
-      self.contadorCalculaTiemposExposicion = self.contadorCalculaTiemposExposicion + 1
-      if self.contadorCalculaTiemposExposicion == 50:
-        self.contadorCalculaTiemposExposicion = 0
-        print("inserta datos X", idSensor, angle)
-        #self.interfazTiempos.evento(self.vectorDesencriptado)
-
 
 
     def conectarSensor(self):
@@ -267,4 +230,3 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.conectarSensor()
     #ui.recibeDatos()
-

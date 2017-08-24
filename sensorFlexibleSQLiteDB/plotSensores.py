@@ -28,6 +28,10 @@ import time
 import os
 import sqlite3
 import ast
+import recvSensor1
+import interfazTiemposExposicionSensor1
+import graphicsRealTimeAverageSensor_1
+
 ion()
 
 
@@ -39,7 +43,7 @@ sys.setrecursionlimit(maxint)
 
 class Ui_MainWindow(object):
     def __init__(self):
-        print("init")
+
         #Socket connection
         self.ip = "192.168.0.124"
         self.port = 10005
@@ -77,7 +81,51 @@ class Ui_MainWindow(object):
 
         self.sqlDataBase()
         self.contadorImagenes = 0
-        #plt.gca().invert_yaxis()
+
+        # Sensor 1: cabeza
+        self.UDP_IP_Sensor1 = "192.168.0.124"
+        self.UDP_PORT_Sensor1 = 10000
+
+        self.UDP_IP_CLIENT_Sensor1 = "192.168.0.100"
+        self.UDP_PORT_CLIENT_Sensor1 = 2233
+
+        self.idSensor_Sensor1 = "1"
+
+
+        # Sensor 2: piernas
+        self.UDP_IP_Sensor2 = "192.168.0.124"
+        self.UDP_PORT_Sensor2 = 10001
+
+        self.UDP_IP_CLIENT_Sensor2 = "192.168.0.101"
+        self.UDP_PORT_CLIENT_Sensor2 = 2233
+
+        self.idSensor_Sensor2 = "2"
+        
+        # Comunicacion sensor 1
+        self.t = threading.Thread(target = recvSensor1.Ui_MainWindow, args=(self.UDP_IP_Sensor1, self.UDP_PORT_Sensor1, self.UDP_IP_CLIENT_Sensor1, self.UDP_PORT_CLIENT_Sensor1, self.idSensor_Sensor1,))
+        self.t.IsBackground = True;
+        self.t.start()
+
+        # Comunicacion sensor 2
+        self.s = threading.Thread(target = recvSensor1.Ui_MainWindow, args=(self.UDP_IP_Sensor2, self.UDP_PORT_Sensor2, self.UDP_IP_CLIENT_Sensor2, self.UDP_PORT_CLIENT_Sensor2, self.idSensor_Sensor2,))
+        self.s.IsBackground = True;
+        self.s.start()
+
+        # Interfaz tiempos de exposicion 1
+        self.u = threading.Thread(target = interfazTiemposExposicionSensor1.interfazTiemposExposicion, args=("1",))
+        self.u.IsBackground = True;
+        self.u.start()
+
+        # Interfaz tiempos de exposicion 2
+        self.v = threading.Thread(target = interfazTiemposExposicionSensor1.interfazTiemposExposicion, args=("2",))
+        self.v.IsBackground = True;
+        self.v.start()
+
+        # Calculo de promedios de presion por zonas
+        self.w = threading.Thread(target = graphicsRealTimeAverageSensor_1.Ui_MainWindow)
+        self.w.IsBackground = True;
+        self.w.start()
+
     def sqlDataBase(self):
         
         self.conn = sqlite3.connect('distribucionPresionSensorFlexible.db')
@@ -101,10 +149,10 @@ class Ui_MainWindow(object):
                 dataSensor1 = row[1]
             for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='2'"):
                 dataSensor2 = row[1]
-
+            
             #Sensor 1
             matrizSensor1 = ast.literal_eval(str(dataSensor1))
-
+            #matrizSensor1 = scipy.ndimage.rotate(matrizSensor1, 0)
 
             #Sensor 1
             matrizSensor2 = ast.literal_eval(str(dataSensor2))
@@ -117,6 +165,7 @@ class Ui_MainWindow(object):
             matrizSensor2 = scipy.ndimage.rotate(matrizSensor2, -90)
 
             matrizCompleta = np.concatenate((matrizSensor1,matrizSensor2), axis=1)
+            #matrizCompleta = matrizSensor1
             
             #self.conn1.commit()
             #matrizCompleta = matrizDistribucion
@@ -138,11 +187,9 @@ class Ui_MainWindow(object):
             self.figSensor1.canvas.draw()
             quality_val = 20
             self.figSensor1.savefig('sensor1.jpeg')
-
+            
         except:
             pass
-
-      
 
 if __name__ == "__main__":
 

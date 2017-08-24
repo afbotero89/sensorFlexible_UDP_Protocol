@@ -224,4 +224,4 @@ class Ui_MainWindow(object):
         img.save('historial_main.png')
         #plt.show()
         
-plotsInstance = Ui_MainWindow()
+#plotsInstance = Ui_MainWindow()

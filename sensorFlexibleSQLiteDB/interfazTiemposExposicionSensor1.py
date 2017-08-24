@@ -13,7 +13,6 @@ import ast
 import scipy.ndimage
 import time
 ion()
-idSensor = sys.argv[1]
 
 
 maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
@@ -23,7 +22,7 @@ maxint = 2 ** (struct.Struct('i').size * 8 - 1) - 1
 
 class interfazTiemposExposicion:
 
-    def __init__(self):
+    def __init__(self, idSensor):
         self.tiempo = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
         self.zona = 0
 
@@ -49,6 +48,8 @@ class interfazTiemposExposicion:
         self.pressureRegionSensor2 = False
 
         self.campoTiemposExposicionCreado = False
+
+        self.idSensor = idSensor    
         #plt1.show(block=False)
         print('inicia tiempos')
         self.sqlDataBase()
@@ -64,27 +65,26 @@ class interfazTiemposExposicion:
         # Crea tabla para los tiempos de exposicion
         self.cTiempos.execute('''CREATE TABLE IF NOT EXISTS tiemposExposicion (id text, exposureTimes real)''')
         # Insert a row of data
-        for row in self.cTiempos.execute("SELECT * FROM tiemposExposicion WHERE '%s'" % idSensor):
-            print(row[0])
-            if row[0] == idSensor:
+        for row in self.cTiempos.execute("SELECT * FROM tiemposExposicion WHERE '%s'" % self.idSensor):
+            if row[0] == self.idSensor:
                 self.campoTiemposExposicionCreado = True
 
         if self.campoTiemposExposicionCreado == False:
             self.campoTiemposExposicionCreado = True
-            self.cTiempos.execute("INSERT INTO tiemposExposicion VALUES ('%s','initValue times 1')" % idSensor)
+            self.cTiempos.execute("INSERT INTO tiemposExposicion VALUES ('%s','initValue times 1')" % self.idSensor)
         self.connTiempos.commit()
 
     def evento(self):
         while True:
             try:
-                for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % idSensor):
+                for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % self.idSensor):
                     dataSensor1 = row[1]
 
 
                 #Sensor 1
                 matrizSensor1 = ast.literal_eval(str(dataSensor1))
 
-                if idSensor == 2:
+                if self.idSensor == 2:
                     matrizSensor1 = scipy.ndimage.rotate(matrizSensor1, -90)
 
                 matrizDistribucionPresion = matrizSensor1
@@ -102,10 +102,8 @@ class interfazTiemposExposicion:
                 #self.zonasActivas = zonasActivas
                 self.determineAreasOfGreaterPressure(matrizDistribucionPresion)
                 tiemposString = str(self.tiempo[0][0]) + "," + str(self.tiempo[0][1]) + "," + str(self.tiempo[0][2]) + "," + str(self.tiempo[1][0]) + "," + str(self.tiempo[1][1]) + "," + str(self.tiempo[1][2]) + "," + str(self.tiempo[2][0]) + "," + str(self.tiempo[2][1]) + "," + str(self.tiempo[2][2])
-                print("inserta datos")
-                self.cTiempos.execute("UPDATE `tiemposExposicion` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, idSensor))
+                self.cTiempos.execute("UPDATE `tiemposExposicion` SET `exposureTimes`= '%s' WHERE `id`='%s'" % (tiemposString, self.idSensor))
                 self.connTiempos.commit()
-                print(self.tiempo[0][0],self.tiempo[0][1],self.tiempo[0][2],self.tiempo[1][0],self.tiempo[1][1],self.tiempo[2][0],self.tiempo[2][1],self.tiempo[2][2], "idSensor", idSensor)
                 time.sleep(0.5)
             except:
                 pass
@@ -247,5 +245,5 @@ class interfazTiemposExposicion:
             self.zona = 0
             
         return self.zonasActivas
-interfazTiemposExposicion()
+
 
