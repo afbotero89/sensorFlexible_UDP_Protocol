@@ -26,7 +26,6 @@ class interfazTiemposExposicion:
         self.tiempo = [['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']]
         self.zona = 0
 
-
         self.cronometro = tiemposDeExposicion.Cronometro()
         
 
@@ -80,12 +79,10 @@ class interfazTiemposExposicion:
                 for row in self.c.execute("SELECT * FROM sensorFlexible WHERE `id`='%s'" % self.idSensor):
                     dataSensor1 = row[1]
 
-
                 #Sensor 1
                 matrizSensor1 = ast.literal_eval(str(dataSensor1))
 
-                if self.idSensor == 2:
-                    matrizSensor1 = scipy.ndimage.rotate(matrizSensor1, -90)
+                #matrizSensor1 = scipy.ndimage.rotate(matrizSensor1, 90)
 
                 matrizDistribucionPresion = matrizSensor1
 
@@ -111,12 +108,6 @@ class interfazTiemposExposicion:
 
     def matrixTransformations(self, matrix):
         transformationMatrix = np.array([['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00'],['00:00:00','00:00:00','00:00:00']])
-        for i in range(3):
-            for j in range(3):
-                if i == j:
-                    transformationMatrix[i][j] = matrix[i][j]
-                else:
-                    transformationMatrix[j][i] = matrix[i][j]
            
         return transformationMatrix     
         
@@ -136,10 +127,10 @@ class interfazTiemposExposicion:
             
             if percentagePressureZone1 > porcentajeSuperadoAlarma:
 
-                self.zonasActivas[0][0] = True
+                self.zonasActivas[2][0] = True
                 
             else:
-                self.zonasActivas[0][0] = False
+                self.zonasActivas[2][0] = False
 
         ############# Zone 2 ##############
         elif self.zona == 2:
@@ -150,10 +141,10 @@ class interfazTiemposExposicion:
                     pressureSumatoriaZone2 = pressureSumatoriaZone2 +  matrizDistribucion[i][j]
             percentagePressureZone2 = (pressureSumatoriaZone2*1000)/maximaSumatoria
             if percentagePressureZone2 > porcentajeSuperadoAlarma:
-                self.zonasActivas[0][1] = True
+                self.zonasActivas[2][1] = True
 
             else:
-                self.zonasActivas[0][1] = False
+                self.zonasActivas[2][1] = False
 
         
         #########  Zone 3 ###############
@@ -164,9 +155,9 @@ class interfazTiemposExposicion:
                     pressureSumatoriaZone3 = pressureSumatoriaZone3 +  matrizDistribucion[i][j]
             percentagePressureZone3 = (pressureSumatoriaZone3*1000)/maximaSumatoria
             if percentagePressureZone3 > porcentajeSuperadoAlarma:
-                self.zonasActivas[0][2] = True
+                self.zonasActivas[2][2] = True
             else:
-                self.zonasActivas[0][2] = False
+                self.zonasActivas[2][2] = False
                        
         #########  Zone 4 ##############
         elif self.zona == 4:
@@ -214,9 +205,9 @@ class interfazTiemposExposicion:
                     pressureSumatoriaZone7 = pressureSumatoriaZone7 +  matrizDistribucion[i][j]
             percentagePressureZone7 = (pressureSumatoriaZone7*1000)/maximaSumatoria
             if percentagePressureZone7 > porcentajeSuperadoAlarma:
-                self.zonasActivas[2][0] = True
+                self.zonasActivas[0][0] = True
             else:
-                self.zonasActivas[2][0] = False
+                self.zonasActivas[0][0] = False
           
         ######## Zone 8 #############
         elif self.zona == 8:
@@ -227,9 +218,9 @@ class interfazTiemposExposicion:
             percentagePressureZone8 = (pressureSumatoriaZone8*1000)/maximaSumatoria
 
             if percentagePressureZone8 > porcentajeSuperadoAlarma:
-                self.zonasActivas[2][1] = True
+                self.zonasActivas[0][1] = True
             else:
-                self.zonasActivas[2][1] = False
+                self.zonasActivas[0][1] = False
  
         ######### Zone 9 ############
         elif self.zona == 9:
@@ -239,9 +230,9 @@ class interfazTiemposExposicion:
                     pressureSumatoriaZone9 = pressureSumatoriaZone9 +  matrizDistribucion[i][j]
             percentagePressureZone9 = (pressureSumatoriaZone9*1000)/maximaSumatoria
             if percentagePressureZone9 > porcentajeSuperadoAlarma:
-                self.zonasActivas[2][2] = True
+                self.zonasActivas[0][2] = True
             else:
-                self.zonasActivas[2][2] = False
+                self.zonasActivas[0][2] = False
             self.zona = 0
             
         return self.zonasActivas

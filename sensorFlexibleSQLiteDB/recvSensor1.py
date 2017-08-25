@@ -24,8 +24,8 @@ class Ui_MainWindow(object):
         self.vectorDatosDistribucionPresion = []
         self.vectorDesencriptado = []
         self.iniciaTramaDeDatos = False
-        self.columnas = 43;
-        self.filas = 43;
+        self.columnas = 44;
+        self.filas = 94;
         matriz = [[0 for x in range(self.columnas)] for x in range(self.filas)] 
         matriz[0][0] = 255
         self.angle = 0
@@ -50,7 +50,7 @@ class Ui_MainWindow(object):
         #self.s.listen(1)
         self.campoSensor1Creado = False
 
-        self.s.settimeout(1)
+        self.s.settimeout(2)
         while True:            
             time.sleep(2)
             self.s.sendto(bytes('*','utf-8'), (self.UDP_IP_CLIENT, self.UDP_PORT_CLIENT))
@@ -84,7 +84,8 @@ class Ui_MainWindow(object):
 
             if self.campoSensor1Creado == False:
                 self.campoSensor1Creado = True
-                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % self.idSensor)
+                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 1','True','0','initValue times 1')" % "1")
+                self.c.execute("INSERT INTO sensorFlexible VALUES ('%s','initValue sensor 2','True','0','initValue times 1')" % "2")
             self.conn.commit()
 
         except:
@@ -192,20 +193,28 @@ class Ui_MainWindow(object):
         
     def dibujarDistribucionPresion(self, matrizDistribucion, angle):
       
-      maximoValor = 0
+        maximoValor = 0
 
-      hora = time.strftime("%H:%M:%S")
+        hora = time.strftime("%H:%M:%S")
 
-      for i in range(self.filas):
-        for j in range(self.columnas):
-            matrizDistribucion[i][j] = matrizDistribucion[i][j]*25
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                matrizDistribucion[i][j] = matrizDistribucion[i][j]*25
 
-            if matrizDistribucion[i][j] > 200:
-                matrizDistribucion[i][j] = 240
+                if matrizDistribucion[i][j] > 200:
+                    matrizDistribucion[i][j] = 240
 
-      self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizDistribucion, angle, self.idSensor))
-      self.conn.commit()
+        matrizDistribucion = np.array(matrizDistribucion)
 
+
+        matrizSuperior = matrizDistribucion[0:47,:]
+        matrizInferior = matrizDistribucion[47:94,:]
+
+        
+        self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizSuperior.tolist(), angle, "1"))
+        self.conn.commit()
+        self.c.execute("UPDATE `sensorFlexible` SET `data`= '%s', `angle`= '%s' WHERE `id`='%s'" % (matrizInferior.tolist(), angle, "2"))
+        self.conn.commit()
 
     def conectarSensor(self):
         #try:
